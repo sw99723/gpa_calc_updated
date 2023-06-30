@@ -2,7 +2,7 @@ import streamlit as st
 from queue import Queue
 import json
 
-USER_DATA_FILE = "user_data.json"
+USER_DATA_FILE = "path/to/user_data.json"
 
 grade_scheme = {
     "A+": {"Grade Point": 4.0, "Percentage": (90, 100)},
