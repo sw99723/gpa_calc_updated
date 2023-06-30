@@ -200,6 +200,13 @@ def login_user(username, password):
     user_data = load_user_data(username, password)
     return bool(user_data)
 
+def user_exists(username):
+    # Check if the username already exists in your system
+    # You can implement your own logic here
+    # For simplicity, let's assume a list of existing usernames
+    existing_usernames = ["user1", "user2", "user3"]
+    return username in existing_usernames
+
 
 if __name__ == "__main__":
     main()
