@@ -146,28 +146,59 @@ def main():
     st.title("GPA Calculator")
     st.write("Welcome to the GPA calculator!")
 
-    # 아이디와 비밀번호 입력
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
+    # Check if the user wants to create a new account
+    create_account = st.checkbox("Create New Account")
 
-    # 아이디와 비밀번호가 입력되었을 때
-    if username and password:
-        courses = load_user_data(username, password)
-        taken_courses = input_grades()
+    if create_account:
+        new_username = st.text_input("Enter a Username")
+        new_password = st.text_input("Enter a Password", type="password")
 
-        if st.button("Save Grades"):
-            save_user_data(username, password, taken_courses)
-
-        if st.button("Calculate GPA"):
-            get_cgpa(taken_courses)
-
-        if st.button("Calculate Remaining Credit"):
-            print_calculate_remaining_credit(taken_courses)
-
-        if st.button("Calculate Remaining CR/NCR"):
-            remaining_cr(taken_courses)
+        if st.button("Create Account"):
+            # Save the new account information
+            create_user_account(new_username, new_password)
+            st.success("Account created successfully! You can now log in.")
     else:
-        st.warning("Please enter your username and password.")
+        # Log in with existing account
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
+
+        if username and password:
+            # Check if the user exists and the password is correct
+            if login_user(username, password):
+                courses = load_user_data(username, password)
+                taken_courses = input_grades()
+
+                if st.button("Save Grades"):
+                    save_user_data(username, password, taken_courses)
+
+                if st.button("Calculate GPA"):
+                    get_cgpa(taken_courses)
+
+                if st.button("Calculate Remaining Credit"):
+                    print_calculate_remaining_credit(taken_courses)
+
+                if st.button("Calculate Remaining CR/NCR"):
+                    remaining_cr(taken_courses)
+            else:
+                st.error("Invalid username or password.")
+        else:
+            st.warning("Please enter your username and password.")
+
+
+def create_user_account(username, password):
+    # Check if the user already exists
+    if user_exists(username):
+        st.error("Username already exists. Please choose a different username.")
+    else:
+        # Create a new user account
+        save_user_data(username, password, {})
+        st.success("Account created successfully! You can now log in.")
+
+
+def login_user(username, password):
+    # Check if the user exists and the password is correct
+    user_data = load_user_data(username, password)
+    return bool(user_data)
 
 
 if __name__ == "__main__":
