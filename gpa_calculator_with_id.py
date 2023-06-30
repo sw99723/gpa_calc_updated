@@ -1,5 +1,6 @@
 import streamlit as st
 from queue import Queue
+import json
 
 USER_DATA_FILE = "user_data.json"
 
