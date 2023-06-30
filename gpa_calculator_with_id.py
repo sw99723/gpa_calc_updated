@@ -1,6 +1,8 @@
 import streamlit as st
 from queue import Queue
 
+USER_DATA_FILE = "user_data.json"
+
 grade_scheme = {
     "A+": {"Grade Point": 4.0, "Percentage": (90, 100)},
     "A": {"Grade Point": 4.0, "Percentage": (85, 89)},
@@ -142,6 +144,29 @@ def load_user_data(username, password):
         st.error("User data not found.")
     return {}
 
+def create_user_account(username, password):
+    # Check if the user already exists
+    if user_exists(username):
+        st.error("Username already exists. Please choose a different username.")
+    else:
+        # Create a new user account
+        save_user_data(username, password, {})
+        st.success("Account created successfully! You can now log in.")
+
+def login_user(username, password):
+    # Check if the user exists and the password is correct
+    user_data = load_user_data(username, password)
+    return bool(user_data)
+
+def user_exists(username):
+    # Check if the username already exists in your system
+    try:
+        with open(USER_DATA_FILE, "r") as file:
+            user_data = json.load(file)
+        return user_data["username"] == username
+    except FileNotFoundError:
+        return False
+
 def main():
     st.title("GPA Calculator")
     st.write("Welcome to the GPA calculator!")
@@ -183,29 +208,6 @@ def main():
                 st.error("Invalid username or password.")
         else:
             st.warning("Please enter your username and password.")
-
-
-def create_user_account(username, password):
-    # Check if the user already exists
-    if user_exists(username):
-        st.error("Username already exists. Please choose a different username.")
-    else:
-        # Create a new user account
-        save_user_data(username, password, {})
-        st.success("Account created successfully! You can now log in.")
-
-
-def login_user(username, password):
-    # Check if the user exists and the password is correct
-    user_data = load_user_data(username, password)
-    return bool(user_data)
-
-def user_exists(username):
-    # Check if the username already exists in your system
-    # You can implement your own logic here
-    # For simplicity, let's assume a list of existing usernames
-    existing_usernames = ["user1", "user2", "user3"]
-    return username in existing_usernames
 
 
 if __name__ == "__main__":
